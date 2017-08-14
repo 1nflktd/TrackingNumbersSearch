@@ -10,6 +10,7 @@ import (
 	"log"
 	"strings"
 	"sync"
+	"time"
 
     "github.com/gorilla/mux"
 )
@@ -75,7 +76,10 @@ type SoapEnvelope struct {
 
 func GetSoapEnvelope(trackingNumber string) (*SoapEnvelope, error) {
 	soapRequestContent := fmt.Sprintf(SOAP_ENVELOPE, trackingNumber)
-	httpClient := new(http.Client)
+	timeout := time.Duration(30 * time.Second)
+	httpClient := &http.Client{
+		Timeout: timeout,
+	}
 	resp, err := httpClient.Post(SOAP_URL, "text/xml; charset=utf-8", bytes.NewBufferString(soapRequestContent))
 	if err != nil {
 		return nil, err
@@ -108,7 +112,7 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 type RetTrackingNumbers struct {
-	Objetos []*Objeto
+	Objetos []*Objeto `json:"objetos"`
 }
 
 func doGetTrackingNumbers(trackingNumbers []string) (*RetTrackingNumbers, error) {
