@@ -49,12 +49,12 @@ type Objeto struct {
 	Numero string `xml:"numero" json:"numero"`
 	Erro string `xml:"erro" json:"erro"`
 	Nome string `xml:"nome" json:"nome"`
-	Evento Evento `xml:"evento" json:"evento"`
+	Evento *Evento `xml:"evento" json:"evento"`
 }
 
 type SoapResponse struct {
 	XMLName xml.Name
-	Objeto Objeto `xml:"return>objeto" json:"objeto"`
+	Objeto *Objeto `xml:"return>objeto" json:"objeto"`
 }
 
 type SoapFault struct {
@@ -108,7 +108,7 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 type RetTrackingNumbers struct {
-	Objetos []Objeto
+	Objetos []*Objeto
 }
 
 func doGetTrackingNumbers(trackingNumbers []string) (*RetTrackingNumbers, error) {
